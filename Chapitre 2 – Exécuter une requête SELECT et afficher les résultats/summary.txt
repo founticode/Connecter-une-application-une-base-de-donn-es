@@ -1,0 +1,184 @@
+📘 PDO & SELECT – Complete Learning Summary
+1️⃣ Database Connection with PDO
+
+We learned how to connect PHP to a MySQL/MariaDB database using PDO.
+
+Example:
+
+$pdo = new PDO("mysql:host=localhost;port=3307;dbname=local_db", "root", "");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+Key Points:
+
+PDO is a class used to connect PHP with databases.
+
+$pdo is an object created from the PDO class.
+
+setAttribute() is a method.
+
+PDO::ATTR_ERRMODE and PDO::ERRMODE_EXCEPTION are class constants.
+
+This setting makes PDO throw exceptions when an error occurs.
+
+2️⃣ try / catch and Exceptions
+
+We used:
+
+try {
+   // code
+} catch (PDOException $e) {
+   echo $e->getMessage();
+}
+
+How it works:
+
+try contains code that might fail.
+
+If an error happens, PHP throws an Exception.
+
+catch captures the exception.
+
+$e->getMessage() returns the error message.
+
+Execution stops inside try when throw happens and jumps to catch.
+
+3️⃣ Executing a SELECT Query
+Method 1: query()
+$stmt = $pdo->query("SELECT * FROM users");
+
+
+Use query() when:
+
+The SQL statement is simple.
+
+There is no user input.
+
+Method 2: prepare() + execute()
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id > :min_id");
+$stmt->execute(['min_id' => 1]);
+
+
+Use this method when:
+
+There is user input.
+
+You need security (prevents SQL injection).
+
+Steps:
+
+prepare() prepares the SQL statement.
+
+:min_id is a placeholder.
+
+execute() sends real values to placeholders.
+
+4️⃣ Retrieving Data
+
+After executing the query, we get results using:
+
+fetch()
+
+Returns one row at a time.
+
+while($row = $stmt->fetch()) {
+   echo $row['name'];
+}
+
+
+Used with while loop.
+
+fetchAll()
+
+Returns all rows at once as an array.
+
+$rows = $stmt->fetchAll();
+
+foreach($rows as $row) {
+   echo $row['name'];
+}
+
+
+Used with foreach loop.
+
+5️⃣ Fetch Modes
+
+We learned that PDO can return data in different formats.
+
+FETCH_ASSOC
+$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+Access like this:
+
+$row['name'];
+
+FETCH_OBJ
+$stmt->fetch(PDO::FETCH_OBJ);
+
+
+Access like this:
+
+$row->name;
+
+6️⃣ rowCount()
+$stmt->rowCount();
+
+
+Used to check:
+
+How many rows were affected.
+
+Whether a query returned results.
+
+Example:
+
+if($stmt->rowCount() > 0) {
+   echo "Data found";
+} else {
+   echo "No data found";
+}
+
+7️⃣ Objects and Methods Understanding
+
+We understood:
+
+Class → blueprint (example: BankAccount)
+
+Object → instance of class
+
+Property → variable inside class
+
+Method → function inside class
+
+$this → refers to the current object
+
+-> → used to access object methods and properties
+
+:: → used to access class constants
+
+8️⃣ Complete SELECT Flow
+
+Connect to database using PDO.
+
+Set error mode to exception.
+
+Use query() or prepare().
+
+Execute the statement.
+
+Retrieve results with fetch() or fetchAll().
+
+Display data in HTML.
+
+Handle errors using try/catch.
+
+🎯 What You Can Do Now
+
+You can now:
+
+✅ Connect PHP to a database
+✅ Execute SELECT queries
+✅ Use prepare() securely
+✅ Retrieve and display data
+✅ Handle errors properly
+✅ Understand objects, methods, and exceptions
