@@ -1,0 +1,176 @@
+PHP OOP & Exception Handling – Summary
+1️⃣ What is a Class?
+
+A class is a blueprint or template used to create objects.
+
+Example:
+
+class Car {
+    public $color;
+
+    public function drive() {
+        echo "The car is moving";
+    }
+}
+
+
+Car → class name
+
+$color → property (variable inside class)
+
+drive() → method (function inside class)
+
+2️⃣ What is an Object?
+
+An object is an instance of a class.
+
+$car = new Car();
+
+
+$car → object
+
+new → creates the object
+
+We use -> to access properties and methods:
+
+$car->color = "Red";
+$car->drive();
+
+
+-> means: “access something inside the object”
+
+3️⃣ Properties vs Methods
+
+Property = variable inside a class
+
+Method = function inside a class
+
+Example:
+
+$this->balance
+
+
+$this refers to the current object
+
+->balance accesses the property
+
+4️⃣ Constructor
+
+A constructor runs automatically when we create an object.
+
+public function __construct($amount) {
+    $this->balance = $amount;
+}
+
+
+It initializes the object with starting values.
+
+5️⃣ Example: BankAccount
+class BankAccount {
+    private $balance;
+
+    public function __construct($amount) {
+        $this->balance = $amount;
+    }
+
+    public function withdraw($money) {
+        if ($money > $this->balance) {
+            throw new Exception("Not enough money");
+        }
+
+        $this->balance -= $money;
+        echo "Withdrawal successful. New balance: " . $this->balance;
+    }
+}
+
+
+Create object:
+
+$account = new BankAccount(100);
+
+
+Withdraw:
+
+$account->withdraw(50);
+
+
+If money > balance → exception
+If money <= balance → withdrawal successful
+
+6️⃣ What is an Exception?
+
+An exception is an error that stops normal program execution.
+
+We use:
+
+throw → to create an exception
+
+try → to test code
+
+catch → to handle the error
+
+Example:
+
+try {
+    $account->withdraw(150);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
+throw sends the error
+
+catch receives it
+
+$e->getMessage() returns the error message
+
+7️⃣ Symbols Explained
+
+-> → access property or method from object
+
+:: → access static property or method
+
+$this → refers to the current object
+
+new → creates object
+
+throw → creates exception
+
+try / catch → handles exceptions
+
+8️⃣ PDO Database Connection (What We Did Before)
+$conn = new PDO("mysql:host=localhost;port=3307;dbname=local_db", "root", "");
+$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+PDO is a class
+
+$conn is an object
+
+setAttribute() is a method
+
+PDO::ATTR_ERRMODE uses :: because it is static
+
+PDO::ERRMODE_EXCEPTION tells PDO to throw exceptions
+
+If connection fails:
+
+catch(PDOException $e) {
+    echo $e->getMessage();
+}
+
+Final Understanding
+
+You now understand:
+
+✅ Class
+✅ Object
+✅ Property
+✅ Method
+✅ $this
+✅ Constructor
+✅ Exception
+✅ throw
+✅ try / catch
+✅ getMessage()
+✅ PDO connection
