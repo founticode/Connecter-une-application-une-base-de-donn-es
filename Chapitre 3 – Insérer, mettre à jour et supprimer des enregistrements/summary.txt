@@ -1,0 +1,189 @@
+📘 PHP PDO – CRUD Operations Summary
+🎯 Educational Objective
+
+To be able to perform full CRUD operations (Create, Read, Update, Delete) using PHP with PDO in order to manipulate data inside a MySQL/MariaDB table securely and correctly.
+
+1️⃣ Understanding CRUD
+
+CRUD represents the four fundamental database operations:
+
+Create → Insert new data
+
+Read → Retrieve data (SELECT)
+
+Update → Modify existing data
+
+Delete → Remove data
+
+We already learned SELECT (Read).
+Then we practiced INSERT, UPDATE, and DELETE.
+
+2️⃣ Secure Queries with prepare() and execute()
+
+For all operations involving user input, we must use:
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute([...]);
+
+Why?
+
+Because it prevents SQL Injection and makes queries secure.
+
+Steps:
+
+Write SQL with placeholders (:name, :id, etc.).
+
+Call prepare() to prepare the statement.
+
+Call execute() to send real values.
+
+3️⃣ INSERT – Create Data
+
+Used to add new records.
+
+Example:
+
+$sql = "INSERT INTO users (name, email) VALUES (:name, :email)";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    'name' => 'Ali',
+    'email' => 'ali@gmail.com'
+]);
+
+
+If successful:
+
+A new row is added to the table.
+
+rowCount() usually returns 1.
+
+4️⃣ UPDATE – Modify Data
+
+Used to change existing data.
+
+Example:
+
+$sql = "UPDATE users SET name = :name WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    'name' => 'Karim',
+    'id' => 1
+]);
+
+
+Important behavior:
+
+If the ID exists and data changes → rowCount() = 1
+
+If the ID exists but data is the same → rowCount() = 0
+
+If the ID does not exist → rowCount() = 0
+
+No exception is thrown unless there is a syntax or connection error.
+
+5️⃣ DELETE – Remove Data
+
+Used to delete records.
+
+Correct syntax:
+
+DELETE FROM users WHERE id = :id
+
+
+Example:
+
+$sql = "DELETE FROM users WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute([
+    'id' => 5
+]);
+
+
+Behavior:
+
+If ID exists → row is deleted → rowCount() = 1
+
+If ID does not exist → no error → rowCount() = 0
+
+6️⃣ rowCount() – Verifying Operations
+$stmt->rowCount();
+
+
+This method returns the number of rows affected by:
+
+INSERT
+
+UPDATE
+
+DELETE
+
+Important:
+
+It does NOT mean the query failed.
+
+It only tells how many rows were actually changed.
+
+Example logic:
+
+if ($stmt->rowCount() > 0) {
+    echo "Operation successful";
+} else {
+    echo "No rows affected";
+}
+
+7️⃣ Exception Handling
+
+All database operations should be wrapped inside:
+
+try {
+   // database code
+} catch (PDOException $e) {
+   echo $e->getMessage();
+}
+
+
+Exceptions occur when:
+
+There is a syntax error.
+
+The table does not exist.
+
+The connection fails.
+
+If no exception appears but rowCount() = 0, it simply means no data was affected.
+
+8️⃣ Important SQL Syntax Reminder
+
+Correct DELETE syntax:
+
+DELETE FROM table_name WHERE condition;
+
+
+Incorrect syntax (causes error):
+
+DELETE table_name WHERE condition;
+
+
+The keyword FROM is required.
+
+✅ What You Can Do Now
+
+You can now:
+
+Connect to a database using PDO
+
+Perform SELECT queries
+
+Insert new data securely
+
+Update existing records
+
+Delete records safely
+
+Verify operations using rowCount()
+
+Understand when exceptions occur
+
+Handle database errors properly
+
+You now have a complete understanding of CRUD logic using PHP and PDO 💪
