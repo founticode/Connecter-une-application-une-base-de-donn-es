@@ -1,0 +1,107 @@
+📘 PDO Error Handling – Summary
+🎯 Educational Objective
+
+Understand how to detect and manage database errors using PDO, try/catch blocks, and proper error configuration.
+
+📚 Concepts Covered
+
+Using try and catch blocks in PHP
+
+Handling errors with PDOException
+
+Using PDO::setAttribute()
+
+Understanding PDO::ATTR_ERRMODE
+
+Using PDO::ERRMODE_EXCEPTION
+
+Best practices for debugging and security
+
+🔹 1. Try / Catch Blocks
+
+The try block contains the code that may produce an error (like SQL queries).
+
+If an error occurs, the catch block handles it safely.
+
+Example:
+
+try {
+    // risky code
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+
+This prevents the application from crashing and allows controlled error handling.
+
+🔹 2. PDOException
+
+PDOException is a special type of error thrown by PDO when something goes wrong (SQL syntax error, connection error, etc.).
+
+It allows us to catch and manage database-related errors properly.
+
+🔹 3. setAttribute() Method
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+This line configures how PDO handles errors.
+
+Explanation:
+
+setAttribute() → Changes a PDO setting
+
+PDO::ATTR_ERRMODE → The setting that controls error behavior
+
+PDO::ERRMODE_EXCEPTION → Tells PDO to throw exceptions when errors happen
+
+Meaning:
+
+If an SQL error occurs, PDO will throw an exception instead of staying silent.
+
+🔹 4. Error Modes in PDO
+
+PDO has three error modes:
+
+PDO::ERRMODE_SILENT (default)
+
+PDO stays silent
+
+You must manually check errors
+
+PDO::ERRMODE_WARNING
+
+Displays a warning
+
+PDO::ERRMODE_EXCEPTION ✅ (Best Practice)
+
+Throws a PDOException
+
+Can be handled with try/catch
+
+Cleaner and more professional
+
+🔹 5. Best Practices
+
+Always use PDO::ERRMODE_EXCEPTION
+
+Always wrap database operations inside try/catch
+
+Do not display detailed error messages in production
+
+Use error messages only during development
+
+Handle errors in a controlled and secure way
+
+✅ Conclusion
+
+Using PDO with proper error handling makes your application:
+
+More secure
+
+More professional
+
+Easier to debug
+
+Cleaner to maintain
+
+This is the correct and modern way to work with databases in PHP.
