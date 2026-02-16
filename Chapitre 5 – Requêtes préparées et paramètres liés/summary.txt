@@ -1,0 +1,177 @@
+📘 Using Prepared Statements in PDO (Security & SQL Injection Protection)
+🎯 Educational Objective
+
+To understand how to use prepared statements with bound parameters in PHP/PDO to secure SQL operations (CRUD) and prevent SQL injection attacks.
+
+📚 Concepts Covered
+
+What prepared statements are
+
+Why they improve security
+
+prepare() method
+
+execute() method
+
+bindParam() and bindValue()
+
+Named parameters (:name)
+
+Anonymous parameters (?)
+
+Multiple executions of a prepared statement
+
+Protection against SQL injection
+
+Basic login example
+
+🔹 1. What is a Prepared Statement?
+
+A prepared statement separates:
+
+SQL structure (the query)
+
+User data (the values)
+
+Example:
+
+$sql = "SELECT * FROM users WHERE email = :email AND password = :password";
+$stmt = $pdo->prepare($sql);
+
+
+Here, :email and :password are placeholders.
+
+The query is prepared first, but not executed yet.
+
+🔹 2. Executing with Data
+$stmt->execute([
+    'email' => $_POST['email'],
+    'password' => $_POST['password']
+]);
+
+
+execute() sends the real values safely to the database.
+
+Even if a user enters malicious code like:
+
+admin@mail.com' OR 1=1 --
+
+
+PDO treats it as normal text, not SQL code.
+
+This prevents SQL injection.
+
+🔹 3. Why Prepared Statements Are Secure
+
+Without prepared statements:
+
+$sql = "SELECT * FROM users WHERE email = '$email'";
+
+
+User input is directly inserted into SQL → dangerous.
+
+With prepared statements:
+
+SQL code and data are separated
+
+User input is never executed as SQL
+
+The database treats input as pure data
+
+🔹 4. Named vs Anonymous Parameters
+Named Parameters
+WHERE email = :email
+
+
+Clear and readable.
+
+Anonymous Parameters
+WHERE email = ?
+
+
+Used like:
+
+$stmt->execute([$email]);
+
+
+Both are secure.
+
+🔹 5. bindParam() vs bindValue()
+bindParam()
+
+Binds a variable by reference
+
+Value is evaluated at execution time
+
+bindValue()
+
+Binds the value immediately
+
+Example:
+
+$stmt->bindParam(':email', $email);
+
+🔹 6. Multiple Executions
+
+You can prepare once and execute many times:
+
+$stmt = $pdo->prepare("INSERT INTO users (name, email) VALUES (:name, :email)");
+
+foreach ($users as $user) {
+    $stmt->execute([
+        'name' => $user['name'],
+        'email' => $user['email']
+    ]);
+}
+
+
+This improves performance because the SQL structure is compiled only once.
+
+🔹 7. Secure Login Logic (Important Concept)
+
+Instead of checking password directly in SQL:
+
+WHERE email = :email AND password = :password
+
+
+Better approach:
+
+Select user by email only
+
+Use password_verify() in PHP
+
+Why?
+
+Passwords should be stored hashed
+
+Comparison must happen securely in PHP
+
+This is the professional approach
+
+🔹 8. Best Practices
+
+Always use prepare() and execute()
+
+Never insert user input directly into SQL
+
+Store passwords using password_hash()
+
+Verify passwords using password_verify()
+
+Use named parameters for clarity
+
+Use try/catch with PDOException
+
+✅ Conclusion
+
+Prepared statements:
+
+Protect against SQL injection
+
+Improve performance
+
+Separate SQL logic from user data
+
+Make applications secure and professional
+
+They are mandatory in modern PHP development.
