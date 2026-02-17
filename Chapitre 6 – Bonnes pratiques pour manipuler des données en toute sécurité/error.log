@@ -1,0 +1,2 @@
+26-02-17 16:50:20 - SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+q-02-26 16:51:28 - SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'founti@gmail.com' for key 'email'
