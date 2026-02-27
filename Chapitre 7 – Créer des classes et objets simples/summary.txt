@@ -1,0 +1,146 @@
+PHP OOP – Classes and Objects Summary
+1️⃣ What is a Class?
+
+A class is a blueprint or template used to create objects.
+
+It defines:
+
+Properties (variables)
+
+Methods (functions inside a class)
+
+Example:
+
+class Car {
+    public $color;
+    
+    public function drive() {
+        echo "The car is driving";
+    }
+}
+2️⃣ What is an Object?
+
+An object is an instance of a class.
+
+We create an object using the keyword new.
+
+$car1 = new Car();
+
+Now $car1 is an object created from the Car class.
+
+3️⃣ Properties (Attributes)
+
+Properties are variables inside a class.
+They store data related to the object.
+
+Example:
+
+class Phone {
+    public $brand;
+}
+
+$p1 = new Phone();
+$p1->brand = "iPhone";
+
+echo $p1->brand;
+
+Here:
+
+brand is a property
+
+-> is used to access properties or methods
+
+Each object has its own property values.
+
+4️⃣ Methods
+
+A method is a function defined inside a class.
+
+Example:
+
+class Calculator {
+
+    public function add($a, $b) {
+        return $a + $b;
+    }
+}
+
+$calc = new Calculator();
+echo $calc->add(5, 3);
+
+Here:
+
+add() is a method
+
+We call it using ->
+
+5️⃣ Accessing Properties and Methods (->)
+
+The arrow operator -> is used to access:
+
+Object properties
+
+Object methods
+
+Example:
+
+$car1->color = "Red";
+$car1->drive();
+6️⃣ Difference Between Function and Method
+
+A function exists outside a class.
+
+A method is a function inside a class.
+
+Example:
+
+function sayHello() {
+    echo "Hello";
+}
+
+class Test {
+    public function sayHello() {
+        echo "Hello";
+    }
+}
+
+The second one is a method because it belongs to a class.
+
+7️⃣ Public vs Private
+
+public → accessible from outside the class
+private → accessible only inside the class
+
+Example:
+
+class BankAccount {
+
+    private $balance = 100;
+
+    public function getBalance() {
+        return $this->balance;
+    }
+}
+
+$account = new BankAccount();
+echo $account->getBalance();
+
+You cannot do:
+
+echo $account->balance; // Error
+
+Because $balance is private.
+
+Final Key Idea
+
+A class defines structure.
+
+An object stores real data.
+
+Properties store information.
+
+Methods perform actions.
+
+-> connects the object to its data and behavior.
+
+Access modifiers (public/private) control visibility.
