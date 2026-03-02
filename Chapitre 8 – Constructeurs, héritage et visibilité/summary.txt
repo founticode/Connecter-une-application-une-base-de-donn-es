@@ -1,0 +1,123 @@
+📄 OOP in PHP – Complete Summary
+
+1️⃣ What is a Class?
+
+A class is a blueprint or template used to create objects.
+It defines properties (variables) and methods (functions) that describe an object.
+
+Example:
+
+class Car {
+    public $color;
+
+    public function drive() {
+        echo "Driving...";
+    }
+}
+
+2️⃣ What is an Object?
+
+An object is an instance of a class.
+It is created using the new keyword.
+
+$car = new Car();
+
+Here, $car is an object of the class Car.
+
+3️⃣ Properties and Methods
+
+Property = variable inside a class.
+
+Method = function inside a class.
+
+Accessing them using ->:
+
+$car->color;
+$car->drive();
+
+4️⃣ Constructor (__construct())
+
+A constructor is a special method that runs automatically when an object is created.
+
+It is used to initialize object properties.
+
+class User {
+    public $name;
+
+    public function __construct($name) {
+        $this->name = $name;
+    }
+}
+
+$user = new User("Ali");
+
+5️⃣ Encapsulation
+
+Encapsulation means protecting data inside a class by controlling access.
+
+We use visibility:
+
+public → accessible everywhere
+
+protected → accessible in the class and child classes
+
+private → accessible only inside the class
+
+Example:
+
+class BankAccount {
+    private $balance = 100;
+
+    public function getBalance() {
+        return $this->balance;
+    }
+}
+
+Private properties cannot be accessed directly from outside the class.
+
+6️⃣ Inheritance (extends)
+
+Inheritance allows one class to inherit properties and methods from another class.
+
+class Animal {
+    public function speak() {
+        echo "Animal sound";
+    }
+}
+
+class Dog extends Animal {
+    public function bark() {
+        echo "Woof";
+    }
+}
+
+The child class (Dog) can use methods from the parent class (Animal).
+
+7️⃣ Method Overriding
+
+A child class can redefine a method from the parent class.
+
+class Dog extends Animal {
+    public function speak() {
+        echo "Woof";
+    }
+}
+
+8️⃣ Difference Between private and protected 
+
+Visibility	Parent	Child	Outside
+public	      ✔	     ✔	     ✔
+protected	  ✔	     ✔	     ✘
+private	      ✔	     ✘	     ✘
+
+9️⃣ Why OOP is Important
+
+OOP helps to:
+
+Organize code
+
+Protect data
+
+Reuse code (inheritance)
+
+Make applications more structured and maintainable
