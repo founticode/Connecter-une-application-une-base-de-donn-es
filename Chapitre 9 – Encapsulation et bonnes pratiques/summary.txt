@@ -1,0 +1,111 @@
+📄 Getter & Setter in PHP – Clear Summary
+
+1️⃣ Why Use Getter and Setter?
+
+When a property is declared as private, it cannot be accessed directly from outside the class.
+
+Example (Not Allowed):
+
+class User {
+    private $name;
+}
+
+$user = new User();
+$user->name = "Ali"; // ❌ Error
+
+To safely access or modify private properties, we use getter and setter methods.
+
+2️⃣ Setter (Write Access)
+
+A setter method is used to modify a private property.
+
+class User {
+    private $name;
+
+    public function setName($name) {
+        $this->name = $name;
+    }
+}
+
+Usage:
+
+$user = new User();
+$user->setName("Ali");
+
+The setter updates the property value.
+
+3️⃣ Getter (Read Access)
+
+A getter method is used to return the value of a private property.
+
+public function getName() {
+    return $this->name;
+}
+
+Usage:
+
+echo $user->getName();
+
+The getter returns the stored value.
+
+4️⃣ Important Concept
+
+Setter = modifies the value
+
+Getter = returns the value
+
+They are normal methods (PHP does not treat them specially)
+
+The names get and set are just a programming convention
+
+5️⃣ Why Not Make Properties Public?
+
+Using getters and setters allows:
+
+Data validation
+
+Control over modifications
+
+Better security (Encapsulation)
+
+Example with validation:
+
+public function setAge($age) {
+    if ($age > 0) {
+        $this->age = $age;
+    }
+}
+
+This prevents invalid values.
+
+6️⃣ Objects Have Independent Data
+
+Each object has its own copy of properties.
+
+$user1 = new User();
+$user2 = new User();
+
+$user1->setName("Ali");
+$user2->setName("Sara");
+
+echo $user1->getName(); // Ali
+
+Objects do not share property values unless static is used.
+
+7️⃣ Key OOP Principle Used Here
+
+This concept is called:
+
+Encapsulation
+
+It means protecting internal data and controlling access through methods.
+
+✔️ Now you understand:
+
+Private properties
+
+Getter and Setter
+
+Encapsulation
+
+Object independence
