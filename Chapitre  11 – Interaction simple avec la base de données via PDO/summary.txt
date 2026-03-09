@@ -1,0 +1,193 @@
+PHP PDO CRUD Operations – Summary
+1. Educational Objective
+
+Learn how to perform basic SQL operations (SELECT, INSERT, UPDATE, DELETE) using the PDO extension in PHP within an object-oriented structure.
+
+This approach helps build clean, secure, and reusable database code.
+
+2. Secure Database Connection with PDO
+
+PDO (PHP Data Objects) provides a secure and consistent way to connect to databases.
+
+Example:
+
+try {
+    $pdo = new PDO(
+        "mysql:host=localhost;dbname=test",
+        "root",
+        ""
+    );
+
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+
+Explanation:
+
+new PDO() creates the database connection
+
+try/catch handles connection errors
+
+ATTR_ERRMODE enables exception handling
+
+3. Simple Queries with query()
+
+The query() method is used for simple SQL queries, usually SELECT statements without parameters.
+
+Example:
+
+$sql = "SELECT * FROM users";
+$stmt = $pdo->query($sql);
+
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+Steps:
+
+Execute the SQL query
+
+Get a PDOStatement object
+
+Retrieve data using fetch() or fetchAll()
+
+4. Simple Queries with exec()
+
+The exec() method executes SQL statements that do not return result sets.
+
+Example:
+
+$sql = "DELETE FROM users WHERE id = 5";
+$pdo->exec($sql);
+
+Common uses:
+
+INSERT
+
+UPDATE
+
+DELETE
+
+However, exec() should not be used with user input because it does not protect against SQL injection.
+
+5. Prepared Statements (prepare + execute)
+
+Prepared statements are the recommended and secure way to execute SQL queries.
+
+Example:
+
+$sql = "INSERT INTO users (name, email)
+        VALUES (:name, :email)";
+
+$stmt = $pdo->prepare($sql);
+
+$stmt->execute([
+    'name' => "Ali",
+    'email' => "ali@gmail.com"
+]);
+
+Advantages:
+
+Prevents SQL injection
+
+Safer for user input
+
+Cleaner and more maintainable code
+
+6. Data Retrieval with fetch() and fetchAll()
+
+After executing a SELECT query, we retrieve results using fetch methods.
+
+fetch()
+
+Retrieves one row only.
+
+Example:
+
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+Example result:
+
+id: 1
+name: Ali
+email: ali@gmail.com
+fetchAll()
+
+Retrieves all rows from the query result.
+
+Example:
+
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+Example result:
+
+[
+ {id:1, name:Ali},
+ {id:2, name:Sara},
+ {id:3, name:Omar}
+]
+7. Exception Handling
+
+Database operations should be wrapped inside try/catch blocks.
+
+Example:
+
+try {
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+} catch (PDOException $e) {
+    echo $e->getMessage();
+}
+
+Benefits:
+
+Prevents application crashes
+
+Displays meaningful error messages
+
+Improves debugging
+
+8. CRUD Operations with PDO
+
+CRUD represents the four basic database operations.
+
+Operation	       SQL Command	     Example Method
+Create	           INSERT	         create()
+Read	           SELECT	         read()
+Update	           UPDATE	         update()
+Delete	           DELETE	         delete()
+
+Example (OOP style):
+
+$user = new User($pdo);
+
+$user->name = "Alice";
+$user->email = "alice@mail.com";
+$user->create();
+9. Best Practices
+
+When working with PDO:
+
+Always use prepared statements for user input
+
+Handle errors with try/catch
+
+Use PDO::FETCH_ASSOC for clean arrays
+
+Organize code using classes
+
+Use one database connection and reuse it
+
+Separate database logic from business logic
+
+10. Key Concept
+
+PDO allows developers to:
+
+Write secure database queries
+
+Prevent SQL injection
+
+Structure code using object-oriented programming
+
+Build scalable and maintainable applications
