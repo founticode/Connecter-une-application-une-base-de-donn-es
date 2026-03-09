@@ -1,0 +1,242 @@
+PHP OOP CRUD with PDO – Summary
+1. Goal
+
+Use object-oriented PHP to organize CRUD operations in a clean and reusable way.
+
+Instead of writing database code everywhere, we separate responsibilities into classes.
+
+2. Main Idea
+
+We usually create:
+
+Database.php → responsible only for the PDO connection
+
+User.php → responsible only for CRUD operations on the users table
+
+This is called logical separation.
+
+3. Database Class
+
+The Database class creates and returns the PDO connection.
+
+Example:
+
+class Database {
+    private $host = "localhost";
+    private $dbname = "local_db";
+    private $username = "root";
+    private $password = "";
+    private $port = 3307;
+
+    public function connect() {
+        return new PDO(
+            "mysql:host=$this->host;port=$this->port;dbname=$this->dbname",
+            $this->username,
+            $this->password
+        );
+    }
+}
+Explanation
+
+Database credentials are stored inside the class
+
+connect() returns a PDO object
+
+The connection is created once, then passed to other classes
+
+4. User Class
+
+The User class handles CRUD operations for the users table.
+
+Example structure:
+
+class User {
+    private $conn;
+    private $table = "users";
+
+    public $id;
+    public $name;
+    public $email;
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+}
+Explanation
+
+$conn stores the PDO connection
+
+$table stores the table name
+
+id, name, and email are object properties
+
+The constructor receives the database connection
+
+5. Why Pass $db to the Constructor?
+
+Example:
+
+$database = new Database();
+$db = $database->connect();
+
+$user = new User($db);
+
+This is better than creating the connection inside the User class.
+
+Benefits
+
+Cleaner code
+
+Only one connection is created
+
+Easier maintenance
+
+Better performance
+
+Better separation of responsibilities
+
+6. Create Method
+
+Used to insert a new user.
+
+public function create() {
+    $sql = "INSERT INTO " . $this->table . " (name, email)
+            VALUES (:name, :email)";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        'name' => $this->name,
+        'email' => $this->email
+    ]);
+}
+Usage
+$user = new User($db);
+$user->name = "Alice";
+$user->email = "alice@gmail.com";
+$user->create();
+7. Read Method
+
+Used to retrieve all users.
+
+public function read() {
+    $sql = "SELECT * FROM " . $this->table;
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+Usage
+$list = $user->read();
+
+foreach ($list as $u) {
+    echo $u['name'] . " - " . $u['email'] . "<br>";
+}
+8. Update Method
+
+Used to modify an existing user.
+
+public function update() {
+    $sql = "UPDATE " . $this->table . "
+            SET name = :name, email = :email
+            WHERE id = :id";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        'id' => $this->id,
+        'name' => $this->name,
+        'email' => $this->email
+    ]);
+}
+Usage
+$user->id = 1;
+$user->name = "Alice Updated";
+$user->email = "aliceupdated@gmail.com";
+$user->update();
+9. Delete Method
+
+Used to remove a user.
+
+public function delete() {
+    $sql = "DELETE FROM " . $this->table . "
+            WHERE id = :id";
+
+    $stmt = $this->conn->prepare($sql);
+
+    return $stmt->execute([
+        'id' => $this->id
+    ]);
+}
+Usage
+$user->id = 2;
+$user->delete();
+10. Full Example
+$database = new Database();
+$db = $database->connect();
+
+$user = new User($db);
+
+// CREATE
+$user->name = "Alice";
+$user->email = "alice@gmail.com";
+$user->create();
+
+// UPDATE
+$user->id = 1;
+$user->name = "Alice Updated";
+$user->email = "aliceupdated@gmail.com";
+$user->update();
+
+// DELETE
+$user->id = 2;
+$user->delete();
+
+// READ
+$list = $user->read();
+foreach ($list as $u) {
+    echo $u['name'] . " - " . $u['email'] . "<br>";
+}
+11. Important OOP Idea
+
+The same PDO object can be shared by many classes.
+
+Example:
+
+$database = new Database();
+$db = $database->connect();
+
+$user = new User($db);
+$product = new Product($db);
+
+Here:
+
+only one connection is created
+
+both classes use the same PDO object
+
+12. Key Advantages
+
+Using OOP for CRUD gives you:
+
+cleaner structure
+
+reusable code
+
+easier maintenance
+
+better separation between connection logic and business logic
+
+more professional project organization
+
+13. Final Key Idea
+
+Database class = creates the connection
+
+User class = uses the connection to perform CRUD
+
+create(), read(), update(), delete() = methods that manage data
+
+One PDO connection can be reused by many objects
+
+This is the foundation of organized PHP OOP CRUD development.
