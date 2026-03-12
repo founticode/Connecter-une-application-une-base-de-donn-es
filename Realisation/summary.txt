@@ -1,0 +1,223 @@
+Mini Blog CRUD App with PHP PDO and OOP – Summary
+Project Goal
+
+The goal of this mini project was to build a simple blog-style application that can:
+
+display articles
+
+add new articles
+
+edit existing articles
+
+delete articles
+
+The project was built using:
+
+PHP
+
+PDO
+
+Object-Oriented Programming
+
+separate files for better organization
+
+Project Structure
+
+The application was organized into multiple files:
+
+database.php → creates the PDO database connection
+
+Article.php → contains the Article class and CRUD methods
+
+index.php → displays all articles
+
+create.php → adds a new article
+
+edit.php → edits an existing article
+
+delete.php → deletes an article
+
+This structure makes the code cleaner and easier to manage.
+
+Database Connection
+
+A Database class was created to handle the connection.
+
+Example:
+
+class Database {
+    private $host = "localhost";
+    private $user = "root";
+    private $password = "";
+    private $dbname = "blog_db";
+    private $port = 3307;
+    public $conn;
+
+    public function connect() {
+        $this->conn = new PDO(
+            "mysql:host=$this->host;port=$this->port;dbname=$this->dbname",
+            $this->user,
+            $this->password
+        );
+
+        $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return $this->conn;
+    }
+}
+
+This class stores the connection settings and returns a PDO object.
+
+Article Class
+
+An Article class was created to manage the articles table.
+
+Main properties:
+
+id
+
+title
+
+content
+
+Main methods:
+
+create() → inserts a new article
+
+read() → gets all articles
+
+readOne() → gets one article by id
+
+update() → updates an article
+
+delete() → deletes an article
+
+Example:
+
+class Article {
+    private $conn;
+    private $table = "articles";
+
+    public $id;
+    public $title;
+    public $content;
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+}
+
+The class receives the database connection through the constructor.
+
+CRUD Logic
+Create
+
+In create.php, the form sends title and content using POST.
+The data is validated, assigned to the object, then saved using create().
+
+Example:
+
+$article->title = $title;
+$article->content = $content;
+$article->create();
+Read
+
+In index.php, all articles are retrieved using read() and displayed in a loop.
+
+Example:
+
+$articles = $article->read();
+Update
+
+In edit.php, the article id is sent using POST.
+First, readOne() loads the current article into the form.
+Then, after the user edits the fields and submits again, update() saves the new values.
+
+This process had two steps:
+
+load the article data into the form
+
+submit the updated title and content
+
+Delete
+
+In delete.php, the article id is sent using POST and delete() removes it from the database.
+
+Example:
+
+$article->id = $_POST['id'];
+$article->delete();
+Why POST Was Used
+
+The edit and delete actions were done with POST instead of GET.
+
+This means:
+
+forms were used instead of links
+
+ids were passed using hidden inputs
+
+the workflow stayed consistent with the rest of the project
+
+Example:
+
+<form action="delete.php" method="POST">
+    <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
+    <button type="submit">Delete</button>
+</form>
+Security and Good Practices
+
+The project used several good practices:
+
+PDO for secure database access
+
+prepare() and execute() for SQL queries
+
+trim() to clean form input
+
+htmlspecialchars() to safely display text
+
+nl2br() to keep content line breaks
+
+separate files for logical organization
+
+Example:
+
+echo htmlspecialchars($item['title']);
+echo nl2br(htmlspecialchars($item['content']));
+
+This protects the page from unwanted HTML or script injection.
+
+Main OOP Concepts Used
+
+This project also used important OOP concepts:
+
+Class → blueprint, such as Database or Article
+
+Object → instance of a class
+
+Property → data inside the object
+
+Method → function inside the class
+
+Constructor → initializes the object with the PDO connection
+
+Final Understanding
+
+This mini project showed how to build a clean CRUD application using PHP PDO and OOP.
+
+It helped demonstrate:
+
+database connection with a class
+
+CRUD methods inside another class
+
+form handling with POST
+
+loading and updating data
+
+displaying content safely
+
+organizing a project into clear files
+
+This is a strong foundation for building larger PHP applications in a structured and professional way.
