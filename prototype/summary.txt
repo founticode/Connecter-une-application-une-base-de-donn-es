@@ -1,0 +1,461 @@
+Mini App with Article Class and PDO – Full Summary
+1. Project Goal
+
+The goal of this mini application is to:
+
+list articles from a database
+
+add new articles
+
+organize the code using PHP OOP and PDO
+
+separate logic into multiple files
+
+This helps make the code cleaner, reusable, and easier to understand.
+
+2. Project Structure
+
+The app is organized into multiple files:
+
+database.php → responsible for the database connection
+
+Article.php → contains the Article class and its methods
+
+index.php → displays the list of articles
+
+create.php → displays the form and handles article creation
+
+This is a good example of logical separation.
+
+3. Database Class
+
+The Database class is used to create and return a PDO connection.
+
+Example:
+
+class Database {
+
+    private $host = "localhost";
+    private $user = "root";
+    private $password = "";
+    private $dbname = "blog_db";
+    private $port = 3307;
+
+    public $conn;
+
+    public function connect() {
+        $this->conn = null;
+
+        try {
+            $this->conn = new PDO(
+                "mysql:host=$this->host;port=$this->port;dbname=$this->dbname",
+                $this->user,
+                $this->password
+            );
+
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        } catch (PDOException $e) {
+            echo "Connection error: " . $e->getMessage();
+        }
+
+        return $this->conn;
+    }
+}
+What it does
+
+stores connection settings
+
+creates a PDO connection
+
+enables exceptions using PDO::ATTR_ERRMODE
+
+returns the PDO object
+
+4. Article Class
+
+The Article class is responsible for all operations related to the articles table.
+
+Example:
+
+class Article {
+    
+    private $conn;
+    private $table = "articles";
+
+    public $id;
+    public $title;
+    public $content;
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    public function create() {
+        $sql = "INSERT INTO $this->table (title, content) VALUES (:title, :content)";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            'title' => $this->title,
+            'content' => $this->content
+        ]);
+    }
+
+    public function read() {
+        $sql = "SELECT * FROM $this->table";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+What it does
+
+stores the PDO connection in $conn
+
+stores the table name in $table
+
+stores article data in object properties
+
+create() inserts a new article
+
+read() retrieves all articles
+
+5. Why title and content Were Important as Class Properties
+
+The form variables:
+
+$title = trim($_POST['title']);
+$content = trim($_POST['content']);
+
+are just normal PHP variables.
+
+They are not automatically linked to the Article object.
+
+If the create() method uses:
+
+$this->title
+$this->content
+
+then these values must first be copied into the object:
+
+$article->title = $title;
+$article->content = $content;
+
+So there are 3 levels of data:
+
+form input → $_POST['title'], $_POST['content']
+
+local variables → $title, $content
+
+object properties → $article->title, $article->content
+
+To make create() work, the data must move from the form to the object.
+
+6. Why Public Properties Were Simpler Here
+
+At this stage, using:
+
+public $title;
+public $content;
+
+was easier because it allowed direct assignment:
+
+$article->title = $title;
+$article->content = $content;
+
+This was useful for learning the flow clearly.
+
+Later, these properties can be changed to private with setters and getters.
+
+7. create.php Logic
+
+The create.php file is responsible for:
+
+loading required classes
+
+creating the database connection
+
+creating an Article object
+
+reading form data
+
+validating input
+
+inserting a new article
+
+Example:
+
+require "database.php";
+require "Article.php";
+
+$database = new Database();
+$db = $database->connect();
+$article = new Article($db);
+
+$message = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $title = trim($_POST['title']);
+    $content = trim($_POST['content']);
+
+    if (empty($title) || empty($content)) {
+        $message = "Please fill in all fields.";
+    } else {
+        $article->title = $title;
+        $article->content = $content;
+
+        if ($article->create()) {
+            $message = "Article added successfully.";
+        } else {
+            $message = "Failed to add article.";
+        }
+    }
+}
+Important points
+
+trim() removes spaces at the beginning and end
+
+empty() checks whether a field is empty
+
+data is assigned to the object
+
+create() is called to insert the article
+
+8. Why require "index.php"; Was Wrong
+
+In create.php, using:
+
+require "index.php";
+
+was incorrect.
+
+Why?
+
+Because index.php is a page for displaying articles, not a reusable class file.
+
+The correct files to require are:
+
+require "database.php";
+require "Article.php";
+
+So each file keeps its own role.
+
+9. index.php Logic
+
+The index.php file is responsible for:
+
+loading the classes
+
+creating the database connection
+
+creating the Article object
+
+reading all articles
+
+displaying them in HTML
+
+Example:
+
+require "database.php";
+require "Article.php";
+
+$database = new Database();
+$db = $database->connect();
+$article = new Article($db);
+
+$articles = $article->read();
+
+Then the articles are displayed using a loop.
+
+10. Displaying Articles in HTML
+
+Example:
+
+<?php if (!empty($articles)) : ?>
+<?php foreach ($articles as $item) : ?>
+<h3><?php echo htmlspecialchars($item['title']); ?></h3>
+<p><?php echo nl2br(htmlspecialchars($item['content'])); ?></p>
+<hr>
+<?php endforeach; ?>
+<?php else : ?>
+<p>No articles found.</p>
+<?php endif; ?>
+Explanation
+if (!empty($articles))
+
+Checks whether there are articles to display.
+
+foreach ($articles as $item)
+
+Loops through the list of articles one by one.
+
+$item['title']
+
+Gets the article title.
+
+htmlspecialchars(...)
+
+Protects against XSS by converting HTML code into safe text.
+
+nl2br(...)
+
+Converts line breaks into <br> so content keeps its formatting.
+
+<hr>
+
+Adds a separator line between articles.
+
+else
+
+If there are no articles, displays:
+
+No articles found.
+11. Why htmlspecialchars() Was Important
+
+When displaying user content in HTML, htmlspecialchars() protects the page.
+
+Example:
+
+If a user writes:
+
+<script>alert('hack')</script>
+
+without htmlspecialchars(), the browser may execute it.
+
+With htmlspecialchars(), it is displayed as plain text instead of executable code.
+
+This helps prevent XSS attacks.
+
+12. Why nl2br() Was Used
+
+nl2br() is useful when the content contains line breaks.
+
+Example:
+
+If the content is:
+
+Hello
+World
+
+HTML normally ignores the line break.
+
+Using:
+
+nl2br(htmlspecialchars($item['content']))
+
+converts the line break into <br>, so it appears correctly in the browser.
+
+13. PDO Best Practices Used in the App
+
+This mini app applied several important PDO practices:
+
+use try/catch in the database connection
+
+set PDO::ATTR_ERRMODE to PDO::ERRMODE_EXCEPTION
+
+use prepared statements with prepare() and execute()
+
+use named parameters like :title and :content
+
+use fetchAll(PDO::FETCH_ASSOC) to get clean arrays
+
+These practices improve security and code quality.
+
+14. OOP Concepts Used in the App
+
+This mini app also used important OOP ideas:
+
+Class
+
+A blueprint, such as Database or Article.
+
+Object
+
+An instance created from a class.
+
+Example:
+
+$database = new Database();
+$article = new Article($db);
+Property
+
+Variables inside a class, such as:
+
+public $title;
+public $content;
+Method
+
+Functions inside a class, such as:
+
+create()
+read()
+connect()
+Constructor
+
+A special method used to initialize the object:
+
+public function __construct($db) {
+    $this->conn = $db;
+}
+
+This allows the Article object to receive and store the PDO connection.
+
+15. Why This Structure Is Good
+
+This structure is better than writing everything in one file because:
+
+the connection logic is separated
+
+the article logic is separated
+
+each file has one clear role
+
+the code is easier to read
+
+the code is easier to reuse
+
+the project is more professional
+
+16. Full Flow of the Mini App
+In create.php
+
+user fills out the form
+
+PHP reads the form data
+
+the data is validated
+
+the data is assigned to the Article object
+
+create() inserts the article into the database
+
+In index.php
+
+PHP creates the database connection
+
+PHP creates the Article object
+
+read() gets all articles
+
+the articles are displayed in a loop
+
+17. Final Understanding
+
+This mini app helped demonstrate how to:
+
+connect to a database using PDO
+
+structure code using classes
+
+use a class to manage database operations
+
+add articles using a form
+
+list articles from the database
+
+separate logic into multiple files
+
+safely display database content in HTML
+
+This is a strong foundation for building larger PHP applications with OOP and PDO.
